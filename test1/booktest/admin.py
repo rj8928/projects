@@ -7,8 +7,11 @@ class HeroInfoInline(admin.TabularInline):
     model = HeroInfo
     extra = 3
 
+
+
+
 class HeroInfoAdmin(admin.ModelAdmin):
-    list_display = ['id','hname','hgender','hcontent','hbook']
+    list_display = ['id','hname','gender','hcontent','hbook']
     search_fields = ['hname']
     list_per_page = 10
 
