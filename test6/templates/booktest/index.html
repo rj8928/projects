@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="/static/booktest/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //使用ajax
+            pro = $('#pro')
+            $.get('/pro/',function (data) {
+{#                {data:[[1,北京],[],[],]}#}
+                $.each(data.data,function (index,item) {
+                    pro.append('<option value="'+item[0]+'">'+item[1]+'</option>')
+                })
+            })
+            //查询市的信息
+            $('#pro').change(function () {
+                $.get('/city'+$(this).val()+'/',function (data) {
+                    $('#dis').empty().append('<option value="0">请选择区/县</option>')
+                    city=$('#city')
+                    city.empty().append('<option value="0">请选择市</option>')
+                    $.each(data.data,function (index,item) {
+                        city.append('<option value="'+item.id+'">'+item.title+'</option>')
+                    })
+                })
+            })
+            //查询县的信息
+            $('#city').change(function () {
+                $.get('city'+$(this).val()+'/',function (data) {
+                    dis = $('#dis')
+                    dis.empty().append('<option value="0">请选择区/县</option>')
+                    $.each(data.data,function (index,item) {
+                        dis.append('<option value="'+item.id+'">'+item.title+'</option>')
+                    })
+                })
+            })
+
+        })
+    </script>
+</head>
+<body>
+<select id="pro">
+    <option value="0">请选择省</option>
+</select>
+<select id="city">
+    <option value="0">请选择市</option>
+</select>
+<select id="dis">
+    <option value="0">请选择县/区</option>
+</select>
+</body>
+</html>
