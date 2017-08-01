@@ -1,0 +1,47 @@
+from django.shortcuts import render
+from models import *
+from django.core.paginator import Paginator
+# Create your views here.
+
+def index(request):
+    typelist = TypeInfo.objects.all()
+    type0 = typelist[0].goodsinfo_set.order_by('-id')[0:4]
+    type01 = typelist[0].goodsinfo_set.order_by('-gclick')[0:4]
+    context = {
+        'type0':type0,'type01':type01
+    }
+    return render(request,'df_goods/index.html',context)
+
+def list(request,id,sort,Pindex=''):
+    id = int(id)
+
+    if sort == '0':
+        list = TypeInfo.objects.get(id=id).goodsinfo_set.order_by('-id')
+    elif sort == '1':
+        list = TypeInfo.objects.get(id=id).goodsinfo_set.order_by('-gprice')
+    elif sort== '2':
+        list = TypeInfo.objects.get(id=id).goodsinfo_set.order_by('-gclick')
+    # print (list)
+    p = Paginator(list,20)
+
+    if Pindex == '':
+        Pindex = '1'
+    Pindex = int(Pindex)
+    list2 = p.page(Pindex)
+    print (list2)
+    plist = p.page_range
+    content = {
+        'list':list2,'plist':plist,'pindex':Pindex,'type':id
+    }
+    return render(request,'df_goods/list.html',content)
+
+def detail(request,id):
+    detail = GoodsInfo.objects.get(id=id)
+    detail.gclick +=1
+    detail.save()
+    typelist = TypeInfo.objects.all()
+    news1 = typelist[0].goodsinfo_set.order_by('-id')[0:2]
+    context = {
+        'detail':detail,'news':news1
+    }
+    return render(request,'df_goods/detail.html',context)
