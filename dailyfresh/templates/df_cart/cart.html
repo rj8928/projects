@@ -1,0 +1,225 @@
+{% extends 'base_foot_head.html' %}
+{% block title %}天天生鲜-购物车{% endblock title %}
+{% block head_js %}
+    <script type="text/javascript">
+    $(function () {
+        $('.sub_page_name').html('|&nbsp;&nbsp;&nbsp;&nbsp;购物车')
+    })
+
+    </script>
+{% endblock head_js %}
+{% block content %}
+	<div class="total_count">全部商品<em>2</em>件</div>	
+	<ul class="cart_list_th clearfix">
+		<li class="col01">商品名称</li>
+		<li class="col02">商品单位</li>
+		<li class="col03">商品价格</li>
+		<li class="col04">数量</li>
+		<li class="col05">小计</li>
+		<li class="col06">操作</li>
+	</ul>
+    {% for goods,cart in goodslist %}
+	<ul class="cart_list_td clearfix">
+		<li class="col01"><input type="checkbox" name="checkbox" value="1" checked id="checkobx"></li>
+		<li class="col02"><img src="/static/{{ goods.gpic }}"></li>
+		<li class="col03">{{ goods.gtitle }}<br><em>{{ goods.gprice }}元/{{ goods.gunit }}</em><b hidden>{{ goods.id }}</b></li>
+
+
+		<li class="col04">{{ goods.gunit }}</li>
+		<li class="col05"><em>{{ goods.gprice }}</em>元</li>
+		<li class="col06">
+			<div class="num_add">
+				<a href="javascript:;" class="add fl">+</a>
+				<input type="text" class="num_show fl" value="{{ cart.count }}">
+				<a href="javascript:;" class="minus fl">-</a>	
+			</div>
+		</li>
+		<li class="col07">{% load myMulTag %}{% mymul goods.gprice cart.count %}元</li>
+		<li class="col08"><a href="javascript:;">删除</a></li>
+	</ul>
+    {% endfor %}
+{#	<ul class="cart_list_td clearfix">#}
+{#		<li class="col01"><input type="checkbox" name="" checked></li>#}
+{#		<li class="col02"><img src="images/goods/goods003.jpg"></li>#}
+{#		<li class="col03">大兴大棚草莓<br><em>16.80元/500g</em></li>#}
+{#		<li class="col04">500g</li>#}
+{#		<li class="col05">16.80元</li>#}
+{#		<li class="col06">#}
+{#			<div class="num_add">#}
+{#				<a href="javascript:;" class="add fl">+</a>#}
+{#				<input type="text" class="num_show fl" value="1">	#}
+{#				<a href="javascript:;" class="minus fl">-</a>	#}
+{#			</div>#}
+{#		</li>#}
+{#		<li class="col07">16.80元</li>#}
+{#		<li class="col08"><a href="javascript:;">删除</a></li>#}
+{#	</ul>#}
+	
+
+	<ul class="settlements">
+		<li class="col01"><input type="checkbox" name="" value="1" checked></li>
+		<li class="col02">全选</li>
+		<li class="col03">合计(不含运费)：<span>¥</span><em>42.60</em><br>共计<b>2</b>件商品</li>
+		<li class="col04"><a href="javascript:;">去结算</a></li>
+	</ul>
+
+{% endblock content %}
+{% block foot_js %}
+    <script type="text/javascript">
+{#    可以用事件委托#}
+{#  增加商品数量#}
+    $('.add').click(function () {
+            temp = $(this).parent().children().eq(1)
+            num =parseInt(temp.attr('value'))+1;
+            temp.attr('value',num)
+            temp.val(num)
+            temp.focus()
+            temp.blur(function () {
+                num =parseInt(temp.val())
+                showprice = $(this).parent().parent().parent().children().eq(4).find("em")
+                price = parseFloat(showprice.html())
+{#                console.log(showprice.html())#}
+                total =(num*price).toFixed(2)
+                totalprice = $(this).parent().parent().parent().children().eq(6)
+                totalprice.html(total+'元')
+            })
+            return false
+        })
+
+{#减少商品数量#}
+        $('.minus').click(function () {
+            temp = $(this).parent().children().eq(1)
+             num = parseInt(temp.attr('value'))-1;
+            if (num<0){num=0};
+
+            temp.attr('value',num)
+            temp.val(num)
+            temp.focus()
+            temp.blur(function () {
+                num =parseInt(temp.val())
+                showprice = $(this).parent().parent().parent().children().eq(4).find("em")
+                price = parseFloat(showprice.html())
+{#                console.log(showprice.html())#}
+                total =(num*price).toFixed(2)
+                totalprice = $(this).parent().parent().parent().children().eq(6)
+                totalprice.html(total+'元')
+            })
+            return false
+        })
+{#全选#}
+    $('.settlements').children().eq(0).children().first().click(function () {
+{#            console.log($(this).prop("checked"))#}
+
+        if ($(this).prop('checked')) {
+            $("input[name=checkbox]").each(function () {
+                $(this).prop("checked", true)
+            })
+        }
+        else
+            {
+                $("input[name=checkbox]").each(function () {
+                    $(this).prop("checked", false)
+                })
+            }
+
+{#         a= $(this).attr('value')#}
+{#        console.log(a)#}
+{#        if ($(this).attr('value') == 1)#}
+{#        {#}
+{#            console.log("222")#}
+{#            $("input[type='checkbox']").prop("checked",false)#}
+{#            $('#checkbox').prop('checked',false)#}
+{#            $(this).attr('value',0)#}
+{#        }#}
+{#        else {#}
+{#            $("input[type='checkbox']").prop("checked",true)#}
+{#            $(this).attr('value',1)#}
+{#        }#}
+    })
+{#计算总价与商品总数#}
+    $(function () {
+        aa()
+        setInterval(aa,1000)
+    })
+    function aa () {
+        total_price = 0
+        total_count = 0
+        checked_goods = $("input[name=checkbox]")
+        checked_goods.each(function () {
+            if ($(this).prop('checked')){
+                price = parseFloat($(this).parent().parent().children().eq(4).find('em').html())
+                count = parseInt($(this).parent().parent().children().eq(5).find('.num_show').val())
+                total_count +=parseInt(count)
+                total_price += parseFloat(price*count)
+            }
+        })
+        total_price = total_price.toFixed(2)
+        $('.settlements').children().eq(2).find('em').html(total_price)
+        $('.settlements').children().eq(2).find('b').html(total_count)
+        $('.total_count').find('em').html(total_count)
+    }
+
+{#删除商品动画与ajax请求#}
+    $('.cart_list_td .col08 a').click(function () {
+        a = $(this).parent().parent()
+        a.slideUp('slow');
+        setTimeout(function () {
+           a.remove()
+        },600)
+        goodsid = a.find('b').html()
+        console.log(goodsid)
+        $.get('/cart/del/'+goodsid+'/')
+    })
+
+
+
+
+
+{#结算，提交选中的商品与数量到订单，并删除已选中购物车#}
+$('.settlements').children().eq(3).click(function () {
+  goods_total = $('input[name=checkbox]');
+var Str = ''
+var List2=[]
+goods_total.each(function () {
+    if ($(this).prop('checked')){
+        count = parseInt($(this).parent().parent().children().eq(5).find('.num_show').val())
+        goods_id = parseInt($(this).parent().parent().find('b').html())
+        Str = Str+goods_id+','+count+','
+{#        List.push(count)#}
+{#        List2.push(List)#}
+    }
+})
+window.location.href='/order/'+'?List='+Str
+})
+
+
+
+{#        console.log(a)#}
+{#        total_total = 0#}
+{#        $(".cart_list_td").each(function (i) {#}
+{##}
+{#        total_total = (total_total + parseFloat($(this).children().eq(6).html()))#}
+{##}
+{##}
+{#    })#}
+{#        total_total = total_total.toFixed(2)#}
+{#    console.log(total_total)#}
+{#    $('.settlements').children().eq(2).find('em').html(total_total)#}
+{##}
+{#    }#}
+
+{##}
+{#    temp = $(this).parent().children().eq(1)#}
+{#    temp.blur(function () {#}
+{#        num =parseInt(temp.val())#}
+{#        console.log(num)#}
+{#        showprice = $(this).parent().parent().parent().children().eq(4)#}
+{#        price = parseFloat(showprice.html())#}
+{#        console.log(price)#}
+{#        取小数后两位#}
+{#        total =(num*price).toFixed(2)#}
+{#        console.log(total)#}
+{#        totalprice = $(this).parent().parent().parent().children().eq(6)#}
+{#        totalprice.html(total+'元')#}
+    </script>
+{% endblock foot_js %}

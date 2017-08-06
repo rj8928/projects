@@ -1,78 +1,122 @@
 
-	{% extends 'base_foot_head.html' %}
+	{% extends 'base_user.html' %}
 {% block title %}天天生鲜用户中心{% endblock title %}
 {% block welcome %}欢迎来到天天生鲜！{% endblock welcome %}
+{% block head_js %}
+    <script type="text/javascript">
+    $(function () {
+        stu = $('.order_list_th .stress')
+        stu.each(function () {
+          if ($(this).html()=='False')
+        {
+            $(this).html("未支付")
+
+        }
+        else {
+              $(this).html("已支付")
+          }
+        })
+
+        stu2 = $('.order_list_table tr').children()
+        stu2.each(function () {
+            if ($(this).eq(1).find('b').html()=='False'){
+                $('this').eq(2).html('待付款')
+                $('this').eq(2).html('去付款')
+
+            }
+            else {
+                $('this').eq(2).html('已付款')
+                $('this').eq(2).html('去评价')
+            }
+        })
+
+    })
+    </script>
+{% endblock head_js %}
 {% block  user_other%}
 
 		<div class="right_content clearfix">
 				<h3 class="common_title2">全部订单</h3>
+            {% for order,orderdetail in list %}
 				<ul class="order_list_th w978 clearfix">
-					<li class="col01">2016-8-21 17:36:24</li>
-					<li class="col02">订单号：56872934</li>
-					<li class="col02 stress">未支付</li>		
+					<li class="col01">{{ order.odate }}</li>
+					<li class="col02">订单号：{{ order.oid }}</li>
+					<li class="col02 stress">{{ order.oIsPay }}</li>
 				</ul>
 
 				<table class="order_list_table w980">
 					<tbody>
 						<tr>
 							<td width="55%">
+                                {% for detail,goods in orderdetail %}
 								<ul class="order_goods_list clearfix">					
-									<li class="col01"><img src="images/goods02.jpg"></li>
-									<li class="col02">嘎啦苹果嘎啦苹果<em>11.80元/500g</em></li>	
-									<li class="col03">1</li>
-									<li class="col04">11.80元</li>	
+									<li class="col01"><img src="/static/{{ goods.gpic }}"></li>
+									<li class="col02">{{ goods.gtitle }}<em>{{ goods.gprice }}元/{{ goods.gunit }}</em></li>
+									<li class="col03">{{ detail.conut }}</li>
+									<li class="col04">{{ detail.price }}元</li>
 								</ul>
-								<ul class="order_goods_list clearfix">					
-									<li class="col01"><img src="images/goods02.jpg"></li>
-									<li class="col02">嘎啦苹果嘎啦苹果<em>11.80元/500g</em></li>	
-									<li class="col03">1</li>
-									<li class="col04">11.80元</li>	
-								</ul>
+                                    {% endfor %}
+{#								<ul class="order_goods_list clearfix">					#}
+{#									<li class="col01"><img src="images/goods02.jpg"></li>#}
+{#									<li class="col02">嘎啦苹果嘎啦苹果<em>11.80元/500g</em></li>	#}
+{#									<li class="col03">1</li>#}
+{#									<li class="col04">11.80元</li>	#}
+{#								</ul>#}
 							</td>
-							<td width="15%">33.60元</td>
+							<td width="15%">{{ order.ototal }}元<b hidden>{{ order.oIsPay }}</b></td>
 							<td width="15%">待付款</td>
 							<td width="15%"><a href="#" class="oper_btn">去付款</a></td>
 						</tr>
 					</tbody>
 				</table>
-				
-				<ul class="order_list_th w978 clearfix">
-					<li class="col01">2016-8-21 17:36:24</li>
-					<li class="col02">订单号：56872934</li>
-					<li class="col02 stress">已支付</li>			
-				</ul>
-				<table class="order_list_table w980">
-					<tbody>
-						<tr>
-							<td width="55%">
-								<ul class="order_goods_list clearfix">					
-									<li class="col01"><img src="images/goods02.jpg"></li>
-									<li class="col02">嘎啦苹果嘎啦苹果<em>11.80元/500g</em></li>	
-									<li class="col03">1</li>
-									<li class="col04">11.80元</li>	
-								</ul>
-								<ul class="order_goods_list clearfix">					
-									<li class="col01"><img src="images/goods02.jpg"></li>
-									<li class="col02">嘎啦苹果嘎啦苹果<em>11.80元/500g</em></li>	
-									<li class="col03">1</li>
-									<li class="col04">11.80元</li>	
-								</ul>
-							</td>
-							<td width="15%">33.60元</td>
-							<td width="15%">已付款</td>
-							<td width="15%"><a href="#" class="oper_btn">查看物流</a></td>
-						</tr>
-					</tbody>
-				</table>
+				{% endfor %}
+{#				<ul class="order_list_th w978 clearfix">#}
+{#					<li class="col01">2016-8-21 17:36:24</li>#}
+{#					<li class="col02">订单号：56872934</li>#}
+{#					<li class="col02 stress">已支付</li>			#}
+{#				</ul>#}
+{#				<table class="order_list_table w980">#}
+{#					<tbody>#}
+{#						<tr>#}
+{#							<td width="55%">#}
+{#								<ul class="order_goods_list clearfix">					#}
+{#									<li class="col01"><img src="images/goods02.jpg"></li>#}
+{#									<li class="col02">嘎啦苹果嘎啦苹果<em>11.80元/500g</em></li>	#}
+{#									<li class="col03">1</li>#}
+{#									<li class="col04">11.80元</li>	#}
+{#								</ul>#}
+{#								<ul class="order_goods_list clearfix">					#}
+{#									<li class="col01"><img src="images/goods02.jpg"></li>#}
+{#									<li class="col02">嘎啦苹果嘎啦苹果<em>11.80元/500g</em></li>	#}
+{#									<li class="col03">1</li>#}
+{#									<li class="col04">11.80元</li>	#}
+{#								</ul>#}
+{#							</td>#}
+{#							<td width="15%">33.60元</td>#}
+{#							<td width="15%">已付款</td>#}
+{#							<td width="15%"><a href="#" class="oper_btn">查看物流</a></td>#}
+{#						</tr>#}
+{#					</tbody>#}
+{#				</table>#}
 
 				<div class="pagenation">
-					<a href="#"><上一页</a>
-					<a href="#" class="active">1</a>
-					<a href="#">2</a>
-					<a href="#">3</a>
-					<a href="#">4</a>
-					<a href="#">5</a>
-					<a href="#">下一页></a>
+					{% if list2.has_previous %}
+				<a href="../{{ list2.previous_page_number }}/">上一页></a>
+            {% endif %}
+                {% for pindex in plist %}
+{#                    {% if pIndex == pindex %}#}
+{#                        {{ pindex }}&nbsp;&nbsp;#}
+{#                        {% else %}#}
+				<a href="../{{ pindex }}/">{{ pindex }}</a>&nbsp;&nbsp;
+{#				<a href="#">2</a>#}
+{#				<a href="#">3</a>#}
+{#				<a href="#">4</a>#}
+{#				<a href="#">5</a>#}
+{#                    {% endif %}#}
+                {% endfor %}
+            {% if list2.has_next %}
+				<a href="../{{ list2.next_page_number }}/">下一页></a>
+            {% endif %}
 				</div>
 		</div>
 	</div>

@@ -1,14 +1,13 @@
-{% extends 'base_goods.html' %}
+{% extends 'base_foot_head.html' %}
 {% block title %}天天生鲜-商品详情{% endblock title %}
-
-{% block body %}
+{% block content %}
 	<div class="navbar_con">
 		<div class="navbar clearfix">
 			<div class="subnav_con fl">
 				<h1>全部商品分类</h1>	
 				<span></span>			
 				<ul class="subnav">
-					<li><a href="#" class="fruit">新鲜水果</a></li>
+					<li><a href="/list/4/0/1/" class="fruit">新鲜水果</a></li>
 					<li><a href="#" class="seafood">海鲜水产</a></li>
 					<li><a href="#" class="meet">猪牛羊肉</a></li>
 					<li><a href="#" class="egg">禽类蛋品</a></li>
@@ -29,7 +28,7 @@
 	<div class="breadcrumb">
 		<a href="#">全部分类</a>
 		<span>></span>
-		<a href="/list/4/">新鲜水果</a>
+		<a href="/list/4/0/1/">{{ type }}</a>
 		<span>></span>
 		<a href="#">商品详情</a>
 	</div>
@@ -48,8 +47,8 @@
 				<div class="num_name fl">数 量：</div>
 				<div class="num_add fl">
 					<input type="text" class="num_show fl" value="1">
-					<a href="javascript:add();" class="add fr">+</a>
-					<a href="javascript:minus()" class="minus fr">-</a>
+					<a href="javascript:;" class="add fr">+</a>
+					<a href="javascript:;" class="minus fr">-</a>
 				</div> 
 			</div>
 			<div class="total">总价：<em>{{ detail.gprice }}元</em></div>
@@ -97,14 +96,15 @@
 		</div>
 	</div>
     <div class="add_jump"></div>
-{% endblock body %}
+        {% endblock content %}
+
 
 
 {% block foot_js %}
-    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript">
-
-    add =function () {
+{#var now = window.location.pathname#}
+{#console.log(now)#}
+{#$.cookie('url',now,{expires:7,path:'/'})#}
         $('.add').click(function () {
             num =parseInt($('.num_show').attr('value'))+1;
             $('.num_show').attr('value',num)
@@ -116,8 +116,8 @@
 
 
         })
-    }
-    minus = function () {
+
+
         $('.minus').click(function () {
             num =parseInt($('.num_show').attr('value'))-1;
             if (num<0){num=0};
@@ -126,16 +126,59 @@
             $('.num_show').focus()
             $('.num_show').blur()
         })
-    }
+
     $('.num_show').blur(function () {
-        num =parseFloat($('.num_show').val())
-        console.log(num)
+        num =parseInt($('.num_show').val())
+{#        console.log(num)#}
         price = parseFloat($('.show_pirze em').html())
-        console.log(price)
-        total =num*price
-        console.log(total)
+{#        console.log(price)#}
+{#        取小数后两位#}
+        total =(num*price).toFixed(2)
+{#        console.log(total)#}
         $('.total em').html(total+'元')
+    });
+
+      $('.add_cart').click(function () {
+        num1 = parseInt($('.num_show').val());
+{#        var now = window.location.pathname#}
+        $.get('/cart/{{ detail.id }}/'+num1+'/',function (data) {
+            console.log(data)
+            if (data.length>100)
+            {
+                alert('您尚未登录，请先登录')
+{#               $.cookie('url',now,{expires:7,path:'/'})#}
+{#                window.location.href='/user/login/'#}
+            }
+        })
+	})
+
+$('.buy_btn').click(function () {
+        num1 = parseInt($('.num_show').val());
+{#        var now = window.location.pathname#}
+    $.get('/cart/buy_now/',function (data) {
+        if (data.stu == 1){
+            $.get('/cart/{{ detail.id }}/'+num1+'/')
+            window.location.href='/cart/'
+        }
+        else {
+            alert('您尚未登录，请先登录后在进行操作')
+            window.location.href='/user/info/'
+        }
     })
+
+	})
+
+{#            console.log(data)#}
+{#            if (data.length>100)#}
+{#            {#}
+{#               $.cookie('url',now,{expires:7,path:'/'}) #}
+{#                window.location.href='/user/login/'#}
+{#            }#}
+
+
+
+
+
 
         </script>
 	<script type="text/javascript">

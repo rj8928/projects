@@ -1,7 +1,7 @@
-{% extends 'base_foot_head.html' %}
+{% extends 'base_user.html' %}
 {% block title %}天天生鲜用户中心{% endblock title %}
 {% block welcome %}欢迎来到天天生鲜！{% endblock welcome %}
-{% block head %}
+{% block head_js %}
     <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
     <script type="text/javascript">
 {#    $(function () {#}
@@ -16,7 +16,7 @@
 {#        $('#uyoubian').val(uyoubian)#}
 {#    })#}
     </script>
-{% endblock head %}
+{% endblock head_js %}
 {% block  user_other%}
 
 		<div class="right_content clearfix">

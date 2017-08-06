@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '&^-)9w=0iu!=&9^0+^%vvtq)guygm)+evgomxico4*(5b-h3(*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
 
 
 # Application definition
@@ -41,6 +41,9 @@ INSTALLED_APPS = (
     'df_user',
     'df_goods',
     'tinymce',
+    'df_cart',
+    'df_order',
+    'haystack',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -113,6 +116,31 @@ STATICFILES_DIRS = [
 ]
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 # 开发阶段目录
-MEDIA_ROOT = os.path.join(BASE_DIR,'static')
+# MEDIA_ROOT = os.path.join(BASE_DIR,'static')
 # 部署阶段目录
-# MEDIA_ROOT = '/var/www/dailyfresh/static'
+STATIC_ROOT = '/var/www/dailyfresh/static/'
+
+# tinymce配置
+TINYMCE_DEFAULT_CONFIG = {
+    'theme':'advanced',
+    'width':600,
+    'height':410,
+}
+# 添加搜索引擎
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR,'whoosh_index'),
+    }
+}
+# 自动生成索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SEARCH_RESULTS_PER_PAGE=20
+
+CACHES = {
+    'default':{
+        'BACKEND': 'redis_cache.cache.RedisCache',
+        'LOCATION': 'localhost:6379',
+        'TIMEOUT': 60,
+    },
+}
